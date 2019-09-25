@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mantissa: 1
+  fraction: 1
+  set_until: 
+
+two:
+  mantissa: 1
+  fraction: 1
+  set_until: 

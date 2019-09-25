@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Rate:</strong>
+  <%= @rate.mantissa %>.<%= @rate.fraction %>
+</p>
+
+<p>
+  (temporary)
+  <strong>Set until:</strong>
+  <%= @rate.overwrite %>
+</p>
+
+<%= link_to 'Edit', edit_rate_path(@rate) %>
