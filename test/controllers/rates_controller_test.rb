@@ -5,44 +5,19 @@ class RatesControllerTest < ActionDispatch::IntegrationTest
     @rate = rates(:one)
   end
 
-  test "should get index" do
-    get rates_url
-    assert_response :success
-  end
-
-  test "should get new" do
-    get new_rate_url
-    assert_response :success
-  end
-
-  test "should create rate" do
-    assert_difference('Rate.count') do
-      post rates_url, params: { rate: { fraction: @rate.fraction, mantissa: @rate.mantissa, set_until: @rate.set_until } }
-    end
-
-    assert_redirected_to rate_url(Rate.last)
-  end
-
   test "should show rate" do
-    get rate_url(@rate)
+    get root_path
     assert_response :success
   end
 
   test "should get edit" do
-    get edit_rate_url(@rate)
+    get admin_path
     assert_response :success
   end
 
   test "should update rate" do
-    patch rate_url(@rate), params: { rate: { fraction: @rate.fraction, mantissa: @rate.mantissa, set_until: @rate.set_until } }
-    assert_redirected_to rate_url(@rate)
+    patch admin_path, params: { rate: { rate: "25.1790", overwrite: Time.now.to_s } }
+    assert_redirected_to root_path
   end
 
-  test "should destroy rate" do
-    assert_difference('Rate.count', -1) do
-      delete rate_url(@rate)
-    end
-
-    assert_redirected_to rates_url
-  end
 end

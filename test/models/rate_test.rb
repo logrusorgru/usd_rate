@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class RateTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "get_the_rate should be" do
+    assert Rate.get_the_rate != nil
+  end
 end

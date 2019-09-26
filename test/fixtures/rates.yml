@@ -1,11 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# the required seed
 one:
-  mantissa: 1
-  fraction: 1
-  set_until: 
-
-two:
-  mantissa: 1
-  fraction: 1
-  set_until: 
+  mantissa_fetched: 0
+  fraction_fetched: 0
+  mantissa_overwrite: 0
+  fraction_overwrite: 0
+  overwrite_until: Time.now
