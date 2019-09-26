@@ -8,7 +8,7 @@ class FetchRateJob < ApplicationJob
       Sidekiq.logger.error "FetchRateJob.perform: zero rate fetched"
       return
     end
-    Rate.update_the_rate fr.floor, ((fr - fr.floor)*1000).to_i
+    Rate.update_the_rate fr.floor, ((fr - fr.floor)*10000).to_i
   end
 
   protected
@@ -20,7 +20,8 @@ class FetchRateJob < ApplicationJob
         today = Time.now.strftime '%d/%m/%Y'
         uri = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=#{today}"
         doc = Nokogiri::XML(open(uri))
-        return doc.xpath('//ValCurs/Valute[@ID="R01235"]/Value').text
+        text = doc.xpath('//ValCurs/Valute[@ID="R01235"]/Value').text
+        return text.gsub(',', '.')
       rescue Exception => excp
         Sidekiq.logger.error "rate loading error: #{excp}"
         return ""

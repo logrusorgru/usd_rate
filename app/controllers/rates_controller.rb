@@ -1,14 +1,9 @@
 class RatesController < ApplicationController
-  before_action :set_rate, only: [:show, :edit, :update, :destroy]
+  before_action :set_rate, only: [:show, :edit, :update]
 
   # GET /
   # GET /.json
   def show
-  end
-
-  # GET /rates/new
-  def new
-    @rate = Rate.get_the_rate
   end
 
   # GET /admin
@@ -20,8 +15,8 @@ class RatesController < ApplicationController
   def update
     respond_to do |format|
       if @rate.overwrite_the_rate(rate_params)
-        format.html { redirect_to @rate, notice: 'Rate was successfully updated.' }
-        format.json { render :show, status: :ok, location: @rate }
+        format.html { redirect_to root_path, notice: 'Rate was successfully updated.' }
+        format.json { render :show, status: :ok, location: '/' }
       else
         format.html { render :edit }
         format.json { render json: @rate.errors, status: :unprocessable_entity }

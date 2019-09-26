@@ -39,6 +39,16 @@ gem 'whenever', require: false
 # clearable jobs queue
 gem 'sidekiq', '~> 6'
 
+# parse cbr xml rates list
+gem 'nokogiri'
+
+# css
+group :assets do
+  gem 'twitter-bootstrap-rails'
+  gem 'less-rails'
+  gem 'mini_racer', platforms: :ruby
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

@@ -3,9 +3,8 @@
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
 
-
 set :output, "./log/cron_log.log"
 
-every 10.seconds do
+every 20.minutes do
   runner "FetchRateJob.perform_later"
 end

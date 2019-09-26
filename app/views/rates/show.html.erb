@@ -1,8 +1,14 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Rate:</strong>
-  <%= @rate.mantissa %>.<%= @rate.fraction %>
+  <strong>Курс:</strong>
+  <span class="rate" id="rate">
+  	<% if @rate.zero? %>
+  		загружается...
+ 	 <% else %>
+  		<%= @rate.mantissa %>.<%= @rate.fraction %>
+  	<% end %>
+  </span>
 </p>
 
 <p>
@@ -11,4 +17,4 @@
   <%= @rate.overwrite %>
 </p>
 
-<%= link_to 'Edit', edit_rate_path(@rate) %>
+<%= link_to 'Временно изменить', admin_path %>

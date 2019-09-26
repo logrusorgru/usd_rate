@@ -23,7 +23,7 @@ class Rate < ApplicationRecord
 	validates :overwrite, presence: true, unless: :skip_overwrite_validation
 
 	def rate_should_not_be_zero
-		if mantissa == 0 && fraction == 0 then
+		if zero? then
 			errors.add(:rate_is_zero, "rate can't be zero")
 		end
 	end
@@ -33,12 +33,18 @@ class Rate < ApplicationRecord
 	#
 
 	after_initialize do |rate|
-		mantissa = 0
-		fraction = 0
-		overwrite = Time.now
+		# doesn't need
+		#
+		# rate.mantissa = 0
+		# rate.fraction = 0
+		if rate.overwrite == nil then
+			rate.overwrite = Time.now
+		end
 	end
 
 	after_find do |rate|
+		# set @mantissa and @fraction to fetched or overwritten,
+		# depending the overwrite_until
 		rate.overwrite = rate.overwrite_until
 		if rate.overwritten? then
 			rate.mantissa = mantissa_overwrite
@@ -67,40 +73,43 @@ class Rate < ApplicationRecord
 	end
 
 	# overwrite/reset the overwritting depending on timestamp
-	def self.overwrite_the_rate params
-		mantissa = params[:mantissa]
-		fraction = params[:fraction]
-		overwrite = params[:overwrite]
+	def overwrite_the_rate params
+		logger.info "overwrite_the_rate: #{params}"
+		@mantissa = params[:mantissa]
+		@fraction = params[:fraction]
+		@overwrite = params[:overwrite]
 		if not valid? then
+			logger.info "overwrite_the_rate: invalid params: #{errors.full_messages}"
 			return false
 		end
 		was_overwritten = overwritten?
-		mantissa_overwrite = mantissa
-		fraction_overwrite = fraction
-		overwrite_until = overwrite
+		self.mantissa_overwrite = @mantissa
+		self.fraction_overwrite = @fraction
+		self.overwrite_until = @overwrite
+		# already validated
 		if save(validate: false) then
 			if overwritten? then
 				if was_overwritten then
-					# todo: stop existing waiting job
+					ApplicationJob.clear :broadcast
 				end
-				# todo: start job waiting for overwrite timeout
+				BroadcastRateJob.set(wait_until: overwrite_until).perform_later
 			elsif was_overwritten then
-				# becomes not overwritten
-				# todo: stop existing waiting job
+				ApplicationJob.clear :broadcast # becomes not overwritten
 			end
-			# todo: start job 'push new rate to clients'
+			BroadcastRateJob.perform_later # broadcas new rate
 			return true # saved succesfully
 		else
 			return false # saving error
 		end
 	end
 
-	# update by fetched
+	# update by fetched, this method called in FetchRateJob
 	def self.update_the_rate mantissa, fraction
+		rate = get_the_rate
 		rate.mantissa = mantissa
 		rate.fraction = fraction
 		skip_overwrite_validation = true
-		if rate.valid? then
+		if not rate.valid? then
 			logger.error "invaid values fetched from cbr: #{mantissa}.#{fraction}"
 			return
 		end
@@ -111,12 +120,12 @@ class Rate < ApplicationRecord
 
 	# rate is zero (not fetched nor set yet)
 	def zero?
-		mantissa == 0 && fraction == 0
+		@mantissa.to_i == 0 && @fraction.to_i == 0
 	end
 
 	# rate is overwritten currenly
 	def overwritten?
-		overwrite < Time.now rescue false
+		@overwrite > Time.now rescue false
 	end
 
 end
