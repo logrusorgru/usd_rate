@@ -16,8 +16,7 @@ class PushRateChannel < ApplicationCable::Channel
 
   	def self.format_msg rate
   	  {
-  	    mantissa: rate.mantissa,
-  	    fraction: rate.fraction,
+  	    rate:      rate.rate,
   	    overwrite: rate.overwrite,
   	  }
   	end

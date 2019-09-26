@@ -42,12 +42,9 @@ gem 'sidekiq', '~> 6'
 # parse cbr xml rates list
 gem 'nokogiri'
 
-# css
-group :assets do
-  gem 'twitter-bootstrap-rails'
-  gem 'less-rails'
-  gem 'mini_racer', platforms: :ruby
-end
+# bootstrap css and query for datetimepiker
+gem 'bootstrap'
+gem 'jquery-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -1,20 +1,31 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Курс:</strong>
-  <span class="rate" id="rate">
-  	<% if @rate.zero? %>
-  		загружается...
- 	 <% else %>
-  		<%= @rate.mantissa %>.<%= @rate.fraction %>
-  	<% end %>
-  </span>
-</p>
+<div class="container p-4">
 
-<p>
-  (temporary)
-  <strong>Set until:</strong>
-  <%= @rate.overwrite %>
-</p>
+  <% if not notice.blank? %>
+    <div class="alert alert-success" role="alert">
+      <%= notice %>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% end %>
 
-<%= link_to 'Временно изменить', admin_path %>
+  <div class="jumbotron" id="rate-content">
+    <p class="lead<% if not @rate.zero? %> d-none<% end %>" id="rate-is-loading">
+      курс загружается...
+    </p>
+    <h1 class="display-4<% if @rate.zero? %> d-none<% end %>" id="rate-value">
+      <%= @rate.rate %>
+      <span class="small">рублей за доллар</span>
+    </h1>
+
+    <hr class="my-4">
+
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="<%= admin_path %>" role="button">
+      	Временно изменить
+      </a>
+    </p>
+
+  </div>
+</div>

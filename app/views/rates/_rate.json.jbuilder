@@ -1,2 +1,2 @@
-json.extract! rate, :id, :mantissa, :fraction, :overwrite
+json.extract! rate, :id, :rate, :overwrite
 json.url rate_url(rate, format: :json)

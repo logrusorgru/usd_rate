@@ -15,7 +15,11 @@ class RatesController < ApplicationController
   def update
     respond_to do |format|
       if @rate.overwrite_the_rate(rate_params)
-        format.html { redirect_to root_path, notice: 'Rate was successfully updated.' }
+        msg = 'Курс успешно изменён'
+        if not @rate.overwritten? then
+          msg = 'Курс успешно откачен обратно, к ЦБР-овскому'
+        end
+        format.html { redirect_to root_path, notice: msg }
         format.json { render :show, status: :ok, location: '/' }
       else
         format.html { render :edit }
@@ -32,6 +36,6 @@ class RatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def rate_params
-      params.require(:rate).permit(:mantissa, :fraction, :overwrite)
+      params.require(:rate).permit(:rate, :overwrite)
     end
 end

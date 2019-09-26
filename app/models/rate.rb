@@ -72,11 +72,16 @@ class Rate < ApplicationRecord
 		first or Rate.new
 	end
 
+	def rate
+		return @mantissa.to_f + (@fraction.to_f / 10000)
+	end
+
 	# overwrite/reset the overwritting depending on timestamp
 	def overwrite_the_rate params
 		logger.info "overwrite_the_rate: #{params}"
-		@mantissa = params[:mantissa]
-		@fraction = params[:fraction]
+		rate = params[:rate].to_f
+		@mantissa = rate.floor
+		@fraction = ((rate - rate.floor) * 1000).floor
 		@overwrite = params[:overwrite]
 		if not valid? then
 			logger.info "overwrite_the_rate: invalid params: #{errors.full_messages}"
