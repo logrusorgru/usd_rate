@@ -35,5 +35,5 @@ foreman start
 
 ```
 foreman run bundle exec whenever -w
-foreman run bundle exec bin/rails runner 'FetchRateJob.perform_later'
+foreman run bundle exec bin/rails runner -e production 'FetchRateJob.perform_later'
 ```
