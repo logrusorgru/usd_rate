@@ -6,7 +6,7 @@ README
 - install related gems
 
 ```
-bundle install
+bundle install --without development test
 ```
 
 - database
