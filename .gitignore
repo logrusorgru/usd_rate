@@ -29,4 +29,9 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# skip coverage reports
 /coverage
+
+# skip .env of the Foreman
+/.env

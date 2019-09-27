@@ -73,7 +73,7 @@ class Rate < ApplicationRecord
 	end
 
 	def rate
-		return @mantissa.to_f + (@fraction.to_f / 10000)
+		return @mantissa.to_f + (@fraction.to_f / 10_000)
 	end
 
 	# overwrite/reset the overwritting depending on timestamp
@@ -81,7 +81,7 @@ class Rate < ApplicationRecord
 		logger.info "overwrite_the_rate: #{params}"
 		rate = params[:rate].to_f
 		@mantissa = rate.to_i
-		@fraction = ((rate * 10000) - (rate.to_i * 10000)).to_i
+		@fraction = ((rate - @mantissa)*10_000).round
 		@overwrite = params[:overwrite]
 		if not valid? then
 			logger.info "overwrite_the_rate: invalid params: #{errors.full_messages}"
@@ -98,8 +98,12 @@ class Rate < ApplicationRecord
 					ApplicationJob.clear :broadcast
 				end
 				BroadcastRateJob.set(wait_until: overwrite_until).perform_later
-			elsif was_overwritten then
-				ApplicationJob.clear :broadcast # becomes not overwritten
+			else
+				@mantissa = self.mantissa_fetched
+				@fraction = self.fraction_fetched
+				if was_overwritten then
+					ApplicationJob.clear :broadcast # becomes not overwritten
+				end
 			end
 			BroadcastRateJob.perform_later # broadcas new rate
 			return true # saved succesfully
@@ -110,6 +114,7 @@ class Rate < ApplicationRecord
 
 	# update by fetched, this method called in FetchRateJob
 	def self.update_the_rate mantissa, fraction
+		logger.debug "update the rate #{mantissa}.#{fraction}"
 		rate = get_the_rate
 		rate.mantissa = mantissa
 		rate.fraction = fraction
@@ -120,7 +125,11 @@ class Rate < ApplicationRecord
 		end
 		rate.mantissa_fetched = mantissa
 		rate.fraction_fetched = fraction
-		rate.save validate: false # already validated
+		if not rate.save validate: false then # already validated
+			return false # saving error
+		end
+		BroadcastRateJob.perform_later
+		true
 	end
 
 	# rate is zero (not fetched nor set yet)

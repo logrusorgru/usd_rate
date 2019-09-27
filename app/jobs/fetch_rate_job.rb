@@ -8,7 +8,7 @@ class FetchRateJob < ApplicationJob
       Sidekiq.logger.error "FetchRateJob.perform: zero rate fetched"
       return
     end
-    Rate.update_the_rate fr.floor, ((fr - fr.floor)*10000).to_i
+    Rate.update_the_rate fr.to_i, ((fr - fr.floor)*10_000).round
   end
 
   protected

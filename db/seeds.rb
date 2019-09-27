@@ -7,10 +7,12 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 # create first record
-rate = Rate.new
-rate.mantissa_fetched   = 0,
-rate.fraction_fetched   = 0,
-rate.mantissa_overwrite = 0,
-rate.fraction_overwrite = 0,
-rate.overwrite_until    = Time.now
-rate.save validate: false
+if Rate.all.empty? then
+	rate = Rate.new
+	rate.mantissa_fetched   = 0,
+	rate.fraction_fetched   = 0,
+	rate.mantissa_overwrite = 0,
+	rate.fraction_overwrite = 0,
+	rate.overwrite_until    = Time.now
+	rate.save validate: false
+end
