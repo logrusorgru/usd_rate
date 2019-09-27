@@ -3,6 +3,12 @@ README
 
 ### Prepare
 
+- install yarn to precompile assets
+
+```
+sudo npm install yarn -g
+```
+
 - install related gems
 
 ```
@@ -23,8 +29,7 @@ foreman run bundle exec bin/rake db:seed
 foreman run bundle exec bin/rake assets:precompile
 ```
 
-- start redis server or make sure it started
-
+- start redis server or make sure it is started
 - start the app
 
 ```
