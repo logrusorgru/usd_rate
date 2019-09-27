@@ -1,0 +1,9 @@
+
+ru:
+  activerecord:
+    errors:
+      models:
+        rate:
+          attributes:
+            rate:
+              cant_be_zero: не может быть нулевым

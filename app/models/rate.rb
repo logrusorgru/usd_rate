@@ -6,16 +6,16 @@ class Rate < ApplicationRecord
 	# validations
 	validates :mantissa, presence: true
 	validates :mantissa, numericality: {
-		only_integer:          true,
-		greater_than:          0,
-		less_than_or_equal_to: 5000
+		only_integer:             true,
+		greater_than_or_equal_to: 0,
+		less_than_or_equal_to:    5000
 	}
 
 	validates :fraction, presence: true
 	validates :fraction, numericality: {
-		only_integer:          true,
-		greater_than:          0,
-		less_than_or_equal_to: 9999
+		only_integer:             true,
+		greater_than_or_equal_to: 0,
+		less_than_or_equal_to:    9999
 	}
 
 	validate :rate_should_not_be_zero
@@ -24,7 +24,7 @@ class Rate < ApplicationRecord
 
 	def rate_should_not_be_zero
 		if zero? then
-			errors.add(:rate_is_zero, "rate can't be zero")
+			errors.add(:rate, :cant_be_zero)
 		end
 	end
 
@@ -80,8 +80,8 @@ class Rate < ApplicationRecord
 	def overwrite_the_rate params
 		logger.info "overwrite_the_rate: #{params}"
 		rate = params[:rate].to_f
-		@mantissa = rate.floor
-		@fraction = ((rate - rate.floor) * 1000).floor
+		@mantissa = rate.to_i
+		@fraction = ((rate * 10000) - (rate.to_i * 10000)).to_i
 		@overwrite = params[:overwrite]
 		if not valid? then
 			logger.info "overwrite_the_rate: invalid params: #{errors.full_messages}"

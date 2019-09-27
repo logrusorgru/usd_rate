@@ -31,3 +31,10 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    errors:
+      models:
+        rate:
+          attributes:
+            rate:
+              cant_be_zero: can't be zero
